@@ -15,11 +15,15 @@ class ImdbSpider(scrapy.Spider):
         then navigate to the Cast & Crew page
         '''
 
-        elts = response.css("li.ipc-inline-list__item")
-        links = [e.css("a").attrib['href'] for e in elts
-                 if e.css("a::text") and e.css("a::text").get() == "Cast & crew"]
-        yield scrapy.Request(response.urljoin(links[0]), callback=self.parse_full_credits)
-        # yield scrapy.Request(response.urljoin("fullcredits/"), callback=self.parse_full_credits)
+        # since all cast & crew page has the link of fullcredits to
+        yield scrapy.Request(response.urljoin("fullcredits/"),
+                             callback=self.parse_full_credits)
+
+        # #alternative way of getting the cast & crew website using css
+        # elts = response.css("li.ipc-inline-list__item")
+        # links = [e.css("a").attrib['href'] for e in elts
+        #          if e.css("a::text") and e.css("a::text").get() == "Cast & crew"]
+        # yield scrapy.Request(response.urljoin(links[0]), callback=self.parse_full_credits)
 
 
     def parse_full_credits(self, response):
